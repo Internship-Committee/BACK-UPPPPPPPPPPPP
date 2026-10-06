@@ -1,0 +1,583 @@
+/* ============================================================
+   IC Portal — Reusable components
+   ============================================================ */
+
+/* ---------------- Buttons ---------------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding: 13px 24px;
+  border-radius: var(--radius-s);
+  font-weight: 700;
+  font-size: 14.5px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+}
+.btn svg{ width:16px; height:16px; transition: transform .18s var(--ease); }
+.btn-primary{
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset;
+}
+.btn-primary:hover{ transform: translateY(-2px); background: #8A2A3C; }
+.btn-primary:hover svg{ transform: translateX(3px); }
+.btn-ghost{
+  background: var(--surface);
+  border-color: var(--surface-border);
+  color: var(--text-primary);
+}
+.btn-ghost:hover{ border-color: var(--surface-border-hover); background: var(--surface-strong); }
+
+/* ---------------- Glass card base ---------------- */
+.glass-card{
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-m);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 20px 40px -24px rgba(0,0,0,0.7);
+  transition: transform .28s var(--ease), box-shadow .28s var(--ease), border-color .28s var(--ease), background .28s var(--ease);
+}
+.glass-card:hover{
+  transform: translateY(-4px);
+  border-color: var(--accent-soft);
+  background: var(--surface-strong);
+  box-shadow: 0 18px 34px -20px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset;
+}
+
+/* ---------------- Course Repository: translucent cards over the shader background ---------------- */
+body[data-page="courses"] .glass-card{
+  background: rgba(58, 20, 27, 0.16);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+body[data-page="courses"] .glass-card:hover{
+  background: rgba(66, 24, 31, 0.30);
+}
+
+/* ---------------- Home nav cards ---------------- */
+.home-card{
+  padding: 30px 28px 28px;
+  min-height: 224px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  text-align:center;
+}
+.home-card .card-head{
+  display:flex; align-items:center; justify-content:center; gap:14px;
+  margin-bottom: 16px;
+}
+.home-card .card-icon{
+  width: 44px; height:44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: rgba(162,51,71,0.16);
+  border: 1px solid rgba(217,168,108,0.30);
+  display:flex; align-items:center; justify-content:center;
+  color: var(--accent-2);
+}
+.home-card .card-icon svg{ width:21px; height:21px; }
+.home-card h3{ font-family: var(--font-heavy); text-transform:uppercase; letter-spacing:.01em; font-size: 1.3rem; font-weight: 800; margin: 0; }
+.home-card p{ font-size: 14px; margin: 0 auto; max-width: 32ch; }
+
+/* Shared bottom CTA slot — same size/weight/alignment across all three cards */
+.home-card .card-cta,
+.home-card .muted-link,
+.home-card .card-live-badge{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  align-self: center;
+  margin-top: 20px;
+  font-size: 13.5px; font-weight:700;
+}
+.home-card .card-cta,
+.home-card .muted-link{
+  color: var(--accent-soft);
+}
+.home-card .card-cta svg,
+.home-card .muted-link svg{ width:14px; height:14px; transition: transform .22s var(--ease); }
+.home-card:hover .card-cta svg{ transform: translateX(4px); }
+
+/* Variant: live-status card — badge sits in the same bottom slot as the CTAs */
+.home-card--live .card-live-badge{
+  letter-spacing:.04em; text-transform:uppercase;
+  color: var(--live-red);
+}
+.home-card--live .card-live-badge .pulse-dot{
+  width:7px; height:7px; border-radius:50%; background: var(--live-red);
+  box-shadow: 0 0 0 0 rgba(255,68,87,0.6);
+  animation: pulse-dot-1 1.8s infinite;
+}
+.home-card--live .card-live-badge.is-closed{
+  color: var(--text-muted);
+}
+
+/* ---------------- Course card ---------------- */
+.course-card{
+  padding: 24px 24px 22px;
+  display:flex; flex-direction:column; gap: 14px;
+}
+.course-card h3{ font-size: 1.08rem; margin:0; }
+.course-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.price-chip{
+  font-weight:800; font-size: 14px; color: var(--text-primary);
+  background: rgba(217,168,108,0.14); border:1px solid rgba(217,168,108,0.32);
+  padding: 5px 12px; border-radius: 999px;
+}
+.rating{
+  display:flex; align-items:center; gap:6px;
+  font-size: 13.5px; font-weight:700; color: #E3B15C;
+}
+.rating svg{ width:15px; height:15px; }
+.domain-tag{
+  align-self:flex-start;
+  font-size: 11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color: var(--accent-2);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(217,168,108,0.32);
+  background: rgba(217,168,108,0.08);
+}
+.duration-chip{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size: 12.5px; font-weight:600; color: var(--text-secondary);
+}
+.duration-chip svg{ width:13px; height:13px; flex-shrink:0; }
+.course-card .card-link{
+  margin-top:4px;
+  display:inline-flex; align-items:center; gap:7px;
+  font-size: 13.5px; font-weight:700; color: var(--accent-soft);
+}
+.course-card .card-link svg{ width:14px; height:14px; }
+
+/* ---------------- Generic list card (case studies / github / resources) ---------------- */
+.list-card{
+  padding: 22px 24px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.list-card h3{ font-size: 1.05rem; margin:0; }
+.list-card .meta{ font-size: 13px; color: var(--text-muted); }
+.list-card p.desc{ font-size: 13.8px; margin: 2px 0 4px; }
+.list-card .card-link{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size: 13.5px; font-weight:700; color: var(--accent-soft);
+}
+.list-card .card-link svg{ width:14px; height:14px; }
+
+/* Resource type badge. Base rule is the fallback look for any type the
+   committee adds later that isn't explicitly styled below (e.g. a brand
+   new "Case Repository" type just works, no CSS change required). */
+.resource-type-badge{
+  align-self:flex-start;
+  font-size: 10.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+  padding: 5px 11px; border-radius: 999px;
+  color:#E9C696; background: rgba(217,168,108,0.12); border:1px solid rgba(217,168,108,0.3);
+}
+.resource-type-badge.type-e-database{
+  color:#A9D9B8; background: rgba(111,190,139,0.1); border:1px solid rgba(111,190,139,0.28);
+}
+.resource-type-badge.type-online-journals{
+  color:#F0C68A; background: rgba(227,177,92,0.12); border:1px solid rgba(227,177,92,0.3);
+}
+
+/* ---------------- Competition card ---------------- */
+.competition-card{
+  padding: 22px 24px;
+  display:flex; flex-direction:column; gap:12px;
+}
+.competition-card h3{ font-size: 1.1rem; margin:0; }
+.competition-card .institute{ font-size:13.5px; color: var(--text-secondary); }
+.deadline-pill{
+  align-self:flex-start;
+  display:inline-flex; align-items:center; gap:7px;
+  font-size: 12.5px; font-weight:800;
+  padding: 6px 13px; border-radius:999px;
+  color: #F0C68A; background: rgba(227,177,92,0.12); border: 1px solid rgba(227,177,92,0.3);
+}
+.deadline-pill svg{ width:13px; height:13px; }
+.competition-card .card-link{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size: 13.5px; font-weight:700; color: var(--accent-soft);
+}
+.competition-card .card-link svg{ width:14px; height:14px; flex-shrink:0; }
+
+/* ---------------- Live project card ---------------- */
+.lp-card{
+  padding: 24px 24px 22px;
+  display:flex; flex-direction:column; gap:12px;
+  position: relative;
+}
+.lp-card .live-flag{
+  position:absolute; top:18px; right:18px;
+  display:flex; align-items:center; gap:6px;
+  font-size: 10.5px; font-weight:800; letter-spacing:.08em;
+}
+.lp-card .live-flag .pulse-dot{
+  width:7px; height:7px; border-radius:50%;
+}
+.live-flag.stage-1{ color: var(--stage-1); }
+.live-flag.stage-1 .pulse-dot{ background: var(--stage-1); animation: pulse-dot-1 1.8s infinite; }
+.live-flag.stage-2{ color: var(--stage-2); }
+.live-flag.stage-2 .pulse-dot{ background: var(--stage-2); animation: pulse-dot-2 1.8s infinite; }
+.live-flag.stage-3{ color: var(--stage-3); }
+.live-flag.stage-3 .pulse-dot{ background: var(--stage-3); animation: pulse-dot-3 1.8s infinite; }
+@keyframes pulse-dot-1{
+  0%{ box-shadow: 0 0 0 0 rgba(var(--stage-1-rgb),0.55); }
+  70%{ box-shadow: 0 0 0 7px rgba(var(--stage-1-rgb),0); }
+  100%{ box-shadow: 0 0 0 0 rgba(var(--stage-1-rgb),0); }
+}
+@keyframes pulse-dot-2{
+  0%{ box-shadow: 0 0 0 0 rgba(var(--stage-2-rgb),0.55); }
+  70%{ box-shadow: 0 0 0 7px rgba(var(--stage-2-rgb),0); }
+  100%{ box-shadow: 0 0 0 0 rgba(var(--stage-2-rgb),0); }
+}
+@keyframes pulse-dot-3{
+  0%{ box-shadow: 0 0 0 0 rgba(var(--stage-3-rgb),0.55); }
+  70%{ box-shadow: 0 0 0 7px rgba(var(--stage-3-rgb),0); }
+  100%{ box-shadow: 0 0 0 0 rgba(var(--stage-3-rgb),0); }
+}
+.lp-card h3{ font-size: 1.15rem; margin: 4px 0 0; padding-right: 60px; }
+.lp-card .role-line{ font-size: 13.5px; color: var(--text-secondary); }
+.lp-card .lp-meta-row{ display:flex; flex-wrap:wrap; gap: 8px; margin-top: 4px; }
+.meta-chip{
+  font-size: 12px; font-weight:600; color: var(--text-secondary);
+  padding: 5px 11px; border-radius: 999px;
+  border: 1px solid var(--surface-border); background: rgba(255,255,255,0.03);
+  display:inline-flex; align-items:center; gap:6px;
+}
+.meta-chip svg{ width:12px; height:12px; }
+.lp-card .lp-deadline{
+  margin-top:6px;
+  font-size: 12.5px; font-weight:700; color: #F0C68A;
+}
+.lp-card .card-link{
+  margin-top:6px;
+  display:inline-flex; align-items:center; gap:7px;
+  font-size: 13.5px; font-weight:700; color: var(--accent-soft);
+}
+.lp-card .card-link svg{ width:14px; height:14px; }
+
+/* ---------------- Knowledge repo landing tiles ---------------- */
+.subtile{
+  padding: 26px 24px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.subtile .card-icon{
+  width: 42px; height:42px; border-radius:11px;
+  background: rgba(162,51,71,0.16); border: 1px solid rgba(217,168,108,0.30);
+  display:flex; align-items:center; justify-content:center; color: var(--accent-2);
+  margin-bottom: 6px;
+}
+.subtile .card-icon svg{ width:20px; height:20px; }
+.subtile h3{ font-size: 1.15rem; margin:0; }
+.subtile .card-cta{
+  margin-top: 6px;
+  display:inline-flex; align-items:center; gap:8px;
+  font-size: 12.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+  color: var(--accent-soft);
+}
+.subtile .card-cta svg{ width:13px; height:13px; transition: transform .22s var(--ease); }
+.subtile:hover .card-cta svg{ transform: translateX(4px); }
+
+/* ---------------- Domain filter pills (Course Repository) ---------------- */
+.domain-filter{
+  display:flex; flex-wrap:wrap; gap:10px;
+  margin-bottom: 30px;
+}
+.domain-pill{
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 13.5px; font-weight: 700;
+  cursor: pointer;
+  transition: all .18s var(--ease);
+}
+.domain-pill:hover{ border-color: var(--surface-border-hover); color: var(--text-primary); }
+.domain-pill.is-active{
+  background: var(--accent);
+  border-color: transparent; color: #fff;
+}
+
+/* ---------------- Loading skeleton ---------------- */
+.skeleton-card{
+  height: 190px;
+  border-radius: var(--radius-l);
+  border: 1px solid var(--surface-border);
+  background: linear-gradient(100deg, rgba(255,255,255,0.02) 30%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+}
+@keyframes shimmer{
+  0%{ background-position: 140% 0; }
+  100%{ background-position: -60% 0; }
+}
+
+/* ---------------- Page disclaimer (prices / deadlines subject to change) ---------------- */
+.page-disclaimer{
+  margin: 18px 2px 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ---------------- Bold editorial accents (redesign) ---------------- */
+
+/* Card titles in list/course/competition/lp cards read as small, heavy, uppercase
+   labels rather than soft serif — matches the bold grotesk inspo. */
+.course-card h3,
+.list-card h3,
+.competition-card h3,
+.lp-card h3,
+.subtile h3{
+  font-family: var(--font-heavy);
+  font-weight: 800;
+  letter-spacing: -0.005em;
+}
+
+/* Numbered index badge — small "01 / 02 / 03" style marker, echoes the
+   "SELECTED PROJECTS 01 / 02 / 03" and "CHOOSE YOUR EDITION" inspo. Add
+   .indexed to a .card-grid to auto-number its direct children. */
+.card-grid.indexed{ counter-reset: card-index; }
+.card-grid.indexed > *{ position: relative; counter-increment: card-index; }
+.card-grid.indexed > *::before{
+  content: counter(card-index, decimal-leading-zero);
+  position: absolute;
+  top: 18px; right: 20px;
+  font-family: var(--font-heavy);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+}
+
+/* Bold underline-style link CTA (replaces the soft arrow-only feel on hover) */
+.course-card .card-link,
+.list-card .card-link,
+.competition-card .card-link,
+.lp-card .card-link,
+.subtile .card-cta{
+  font-family: var(--font-heavy);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 12px;
+}
+
+/* Section dividers — thin rule + tiny caps label, used above grids for a
+   confident editorial rhythm (opt-in via .section-rule) */
+.section-rule{
+  display:flex; align-items:center; gap:14px;
+  margin: 0 0 26px;
+}
+.section-rule::after{
+  content:""; flex:1; height:1px; background: var(--sidebar-border);
+}
+
+/* Editorial cards use ink surfaces and hairline rules, not glass or lift. */
+.btn{ border-radius:999px; font-family:var(--font-heavy); }
+.btn-primary{ background:var(--accent); color:#000; box-shadow:none; }
+.btn-primary:hover{ background:#fff; color:#000; transform:none; }
+.btn-primary:hover svg{ transform:translateX(3px); }
+.btn-ghost{ background:#202020; border-color:rgba(255,255,255,.24); color:#fff; }
+.btn-ghost:hover{ border-color:var(--accent); background:#292929; }
+.glass-card{
+  border:1px solid rgba(255,255,255,.2);
+  border-left:3px solid var(--accent);
+  border-radius:var(--radius-s);
+  background:#1d1d1d;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:none;
+  transition:border-color .16s ease,background .16s ease,color .16s ease;
+}
+.glass-card:hover{
+  transform:none;
+  border-color:rgba(255,255,255,.42);
+  border-left-color:var(--accent);
+  background:#242424;
+  box-shadow:none;
+}
+.card-grid > :nth-child(3n + 2){ border-left-color:var(--accent-2); }
+.card-grid > :nth-child(3n){ border-left-color:#FFB000; }
+.home-card .card-icon,
+.subtile .card-icon{
+  border:0;
+  border-radius:var(--radius-s);
+  background:var(--accent);
+  color:#000;
+}
+.home-card:nth-child(3n + 2) .card-icon,
+.subtile:nth-child(2) .card-icon{ background:var(--accent-2); color:#fff; }
+.home-card h3,
+.course-card h3,
+.list-card h3,
+.competition-card h3,
+.lp-card h3,
+.subtile h3{
+  color:#fff;
+  font-family:var(--font-heavy);
+  font-weight:800;
+  letter-spacing:-.035em;
+  text-transform:none;
+}
+.home-card p,.list-card p.desc,.lp-card .role-line{ color:#bdbdbd; }
+.home-card .card-cta,.home-card .muted-link,.course-card .card-link,.list-card .card-link,
+.competition-card .card-link,.lp-card .card-link,.subtile .card-cta{
+  color:var(--accent);
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:.03em;
+}
+.home-card:hover .card-cta svg,.subtile:hover .card-cta svg{ transform:translateX(3px); }
+.price-chip,.deadline-pill,.domain-tag,.resource-type-badge,.meta-chip{
+  border-radius:var(--radius-s);
+  border-color:rgba(255,255,255,.24);
+  background:#252525;
+  color:#fff;
+}
+.price-chip{ font-family:var(--font-mono); font-size:12px; }
+.rating{ color:#FFCF5A; }
+.domain-tag{ color:var(--accent); background:rgba(60,255,208,.08); border-color:rgba(60,255,208,.42); }
+.resource-type-badge.type-e-database{ color:var(--accent); background:rgba(60,255,208,.08); border-color:rgba(60,255,208,.35); }
+.resource-type-badge.type-online-journals{ color:#FFD166; background:rgba(255,209,102,.08); border-color:rgba(255,209,102,.35); }
+.deadline-pill{ color:#FFD166; background:rgba(255,209,102,.08); border-color:rgba(255,209,102,.35); }
+.lp-card .live-flag{ font-family:var(--font-mono); font-size:9px; }
+.lp-card .lp-deadline{ color:#FFD166; }
+.meta-chip{ color:#c8c8c8; }
+.domain-filter{ gap:7px; }
+.domain-pill{
+  border-radius:var(--radius-s);
+  background:#1d1d1d;
+  color:#ccc;
+  font:700 10px/1.3 var(--font-mono);
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+.domain-pill:hover{ border-color:var(--accent); color:var(--accent); }
+.domain-pill.is-active{ background:var(--accent); color:#000; border-color:var(--accent); }
+.skeleton-card{ border-radius:var(--radius-s); background:#242424; animation:none; }
+.page-disclaimer{ font-style:normal; }
+.card-grid.indexed > *::before{ font:700 10px/1 var(--font-mono); color:#888; }
+
+@media (prefers-reduced-motion:reduce){
+  .lp-card .live-flag .pulse-dot,.gallery-live-dot{ animation:none !important; }
+}
+
+/* Let each repository page use a layout suited to the information it carries. */
+body[data-page="courses"] #courses-grid{ display:grid; grid-template-columns:1fr; gap:0; }
+body[data-page="courses"] .course-card{
+  display:grid;
+  grid-template-columns:minmax(200px,1.35fr) minmax(125px,.8fr) minmax(155px,1fr) auto;
+  grid-template-rows:auto auto;
+  align-items:center;
+  gap:8px 20px;
+  padding:17px 20px;
+  border-radius:0;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.2);
+  border-left:3px solid var(--accent);
+  background:#191919;
+}
+body[data-page="courses"] .course-card .domain-tag{ grid-column:1; grid-row:1; justify-self:start; margin:0; }
+body[data-page="courses"] .course-card h3{ grid-column:1; grid-row:2; margin:0; font-size:16px; }
+body[data-page="courses"] .course-card .duration-chip{ grid-column:2; grid-row:1/3; }
+body[data-page="courses"] .course-card .course-row{ grid-column:3; grid-row:1/3; justify-content:flex-start; flex-wrap:wrap; }
+body[data-page="courses"] .course-card .card-link{ grid-column:4; grid-row:1/3; white-space:nowrap; }
+body[data-page="case-studies"] #case-studies-grid,
+body[data-page="github"] #github-grid,
+body[data-page="resources"] #resources-grid{ display:grid; grid-template-columns:1fr; gap:0; }
+body[data-page="case-studies"] .list-card,
+body[data-page="github"] .list-card,
+body[data-page="resources"] .list-card{
+  display:grid;
+  align-items:center;
+  gap:8px 22px;
+  padding:18px 20px;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.2);
+  border-left:3px solid var(--accent);
+  border-radius:0;
+  background:#191919;
+}
+body[data-page="case-studies"] .list-card{ grid-template-columns:minmax(220px,1.4fr) minmax(150px,.8fr) auto; }
+body[data-page="case-studies"] .list-card h3{ grid-column:1; grid-row:1; }
+body[data-page="case-studies"] .list-card .meta{ grid-column:2; grid-row:1; margin:0; }
+body[data-page="case-studies"] .list-card .card-link{ grid-column:3; grid-row:1; justify-self:end; }
+body[data-page="github"] .list-card{ grid-template-columns:minmax(200px,1.2fr) minmax(220px,2fr) auto; }
+body[data-page="github"] .list-card h3{ grid-column:1; grid-row:1; }
+body[data-page="github"] .list-card .desc{ grid-column:2; grid-row:1; margin:0; }
+body[data-page="github"] .list-card .card-link{ grid-column:3; grid-row:1; justify-self:end; }
+body[data-page="resources"] .list-card{ grid-template-columns:minmax(120px,.65fr) minmax(180px,1.2fr) minmax(220px,2fr) auto; }
+body[data-page="resources"] .list-card .resource-type-badge{ grid-column:1; grid-row:1; }
+body[data-page="resources"] .list-card h3{ grid-column:2; grid-row:1; }
+body[data-page="resources"] .list-card .desc{ grid-column:3; grid-row:1; margin:0; }
+body[data-page="resources"] .list-card .card-link{ grid-column:4; grid-row:1; justify-self:end; }
+body[data-page="live-projects"] #lp-grid{ display:grid; grid-template-columns:1fr; gap:0; }
+body[data-page="live-projects"] .lp-card{
+  display:grid;
+  grid-template-columns:minmax(105px,.55fr) minmax(150px,1fr) minmax(180px,1.2fr) minmax(160px,1fr) auto auto;
+  align-items:center;
+  gap:12px 18px;
+  padding:18px 20px;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.2);
+  border-left:3px solid var(--accent);
+  border-radius:0;
+  background:#191919;
+}
+body[data-page="live-projects"] .lp-card .live-flag,
+body[data-page="live-projects"] .lp-card h3,
+body[data-page="live-projects"] .lp-card .role-line,
+body[data-page="live-projects"] .lp-card .lp-meta-row,
+body[data-page="live-projects"] .lp-card .lp-deadline,
+body[data-page="live-projects"] .lp-card .card-link{ position:static; margin:0; padding:0; }
+body[data-page="live-projects"] .lp-card .live-flag{ grid-column:1; grid-row:1; white-space:nowrap; }
+body[data-page="live-projects"] .lp-card h3{ grid-column:2; grid-row:1; padding:0; }
+body[data-page="live-projects"] .lp-card .role-line{ grid-column:3; grid-row:1; }
+body[data-page="live-projects"] .lp-card .lp-meta-row{ grid-column:4; grid-row:1; }
+body[data-page="live-projects"] .lp-card .lp-deadline{ grid-column:5; grid-row:1; white-space:nowrap; }
+body[data-page="live-projects"] .lp-card .card-link{ grid-column:6; grid-row:1; white-space:nowrap; }
+
+@media (max-width:980px){
+  body[data-page="courses"] .course-card{ grid-template-columns:minmax(180px,1fr) minmax(130px,.8fr) auto; }
+  body[data-page="courses"] .course-card .course-row{ grid-column:2; grid-row:1/3; }
+  body[data-page="courses"] .course-card .duration-chip{ display:none; }
+  body[data-page="courses"] .course-card .card-link{ grid-column:3; }
+  body[data-page="live-projects"] .lp-card{ grid-template-columns:minmax(110px,.6fr) minmax(180px,1fr) minmax(150px,1fr) auto; }
+  body[data-page="live-projects"] .lp-card .role-line{ grid-column:2; grid-row:2; }
+  body[data-page="live-projects"] .lp-card .lp-meta-row{ grid-column:3; grid-row:2; }
+  body[data-page="live-projects"] .lp-card .lp-deadline{ grid-column:1; grid-row:2; }
+  body[data-page="live-projects"] .lp-card .card-link{ grid-column:4; grid-row:1/3; }
+}
+@media (max-width:700px){
+  body[data-page="courses"] .course-card{ grid-template-columns:1fr auto; gap:8px 12px; padding:16px; }
+  body[data-page="courses"] .course-card .domain-tag{ grid-column:1; grid-row:1; }
+  body[data-page="courses"] .course-card h3{ grid-column:1/-1; grid-row:2; }
+  body[data-page="courses"] .course-card .course-row{ grid-column:1; grid-row:3; }
+  body[data-page="courses"] .course-card .card-link{ grid-column:2; grid-row:3; justify-self:end; }
+  body[data-page="case-studies"] .list-card,
+  body[data-page="github"] .list-card,
+  body[data-page="resources"] .list-card{ grid-template-columns:1fr auto; padding:16px; }
+  body[data-page="case-studies"] .list-card h3,
+  body[data-page="github"] .list-card h3,
+  body[data-page="resources"] .list-card h3{ grid-column:1/-1; grid-row:1; }
+  body[data-page="case-studies"] .list-card .meta,
+  body[data-page="github"] .list-card .desc,
+  body[data-page="resources"] .list-card .desc{ grid-column:1/-1; grid-row:2; }
+  body[data-page="case-studies"] .list-card .card-link,
+  body[data-page="github"] .list-card .card-link,
+  body[data-page="resources"] .list-card .card-link{ grid-column:1/-1; grid-row:3; justify-self:start; }
+  body[data-page="resources"] .list-card .resource-type-badge{ grid-column:1/-1; grid-row:1; }
+  body[data-page="resources"] .list-card h3{ grid-row:2; }
+  body[data-page="resources"] .list-card .desc{ grid-row:3; }
+  body[data-page="resources"] .list-card .card-link{ grid-row:4; }
+  body[data-page="live-projects"] .lp-card{ grid-template-columns:1fr auto; gap:8px 12px; padding:16px; }
+  body[data-page="live-projects"] .lp-card .live-flag{ grid-column:1; grid-row:1; }
+  body[data-page="live-projects"] .lp-card h3{ grid-column:1/-1; grid-row:2; }
+  body[data-page="live-projects"] .lp-card .role-line{ grid-column:1/-1; grid-row:3; }
+  body[data-page="live-projects"] .lp-card .lp-meta-row{ grid-column:1/-1; grid-row:4; }
+  body[data-page="live-projects"] .lp-card .lp-deadline{ grid-column:1; grid-row:5; white-space:normal; }
+  body[data-page="live-projects"] .lp-card .card-link{ grid-column:2; grid-row:5; }
+}

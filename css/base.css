@@ -1,0 +1,160 @@
+/* ============================================================
+   IC Portal — Base styles, tokens, typography
+   Theme: ink-black editorial system with mint and ultraviolet signals
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  /* The Verge-inspired editorial palette: ink canvas, signal mint, violet. */
+  --bg:               #131313;
+  --bg-radial-1:      #202020;
+  --bg-radial-2:      #191919;
+
+  --sidebar-bg:       #131313;
+  --sidebar-border:   rgba(255, 255, 255, 0.18);
+
+  --surface:          #1d1d1d;
+  --surface-strong:   #292929;
+  --surface-border:   rgba(255, 255, 255, 0.2);
+  --surface-border-hover: rgba(60, 255, 208, 0.8);
+
+  --accent:           #3CFFD0;
+  --accent-soft:      #79FFE0;
+  --accent-2:         #875CFF;
+  --accent-2-soft:    #B69BFF;
+
+  --text-primary:     #FFFFFF;
+  --text-secondary:   #D0D0D0;
+  --text-muted:       #999999;
+
+  --live-red:         #FF6B7A;
+
+  --stage-1:          #FF6B7A;
+  --stage-1-rgb:       255,107,122;
+  --stage-2:          #FFD166;
+  --stage-2-rgb:       255,209,102;
+  --stage-3:          #54E39A;
+  --stage-3-rgb:       84,227,154;
+
+  --radius-s:  3px;
+  --radius-m:  12px;
+  --radius-l:  20px;
+
+  /* Anton carries editorial headlines; Space Mono is reserved for labels. */
+  --font-display: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  --font-heavy:   'Manrope', -apple-system, sans-serif;
+  --font-body:    'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Space Mono', 'Courier New', monospace;
+
+  --sidebar-w: 272px;
+  --sidebar-w-collapsed: 84px;
+  --header-h: 82px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; color-scheme: dark; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+h1,h2,h3,h4{
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.98;
+  margin: 0 0 .5em;
+  letter-spacing: 0;
+}
+
+p{ margin: 0 0 1em; color: var(--text-secondary); }
+
+a{ color: inherit; text-decoration: none; }
+
+img{ max-width: 100%; display:block; }
+
+ul{ margin:0; padding:0; list-style:none; }
+
+button{ font-family: inherit; }
+
+/* --- Focus states (accessibility) --- */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible{
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* --- Scrollbar (subtle) --- */
+::-webkit-scrollbar{ width: 10px; height: 10px; }
+::-webkit-scrollbar-track{ background: transparent; }
+::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.24); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover{ background: rgba(60,255,208,0.7); }
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Utility --- */
+.eyebrow{
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+.section-heading{
+  font-size: clamp(2.4rem, 5.4vw, 5.8rem);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* Bold editorial accent — italic script-weight serif, used sparingly on a single word */
+.script-accent{
+  font-family: var(--font-heavy);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.muted-link{
+  color: var(--text-secondary);
+  border-bottom: 1px solid transparent;
+  transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.muted-link:hover{ color: var(--text-primary); border-color: var(--surface-border-hover); }
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+.skip-link{
+  position:absolute; left:12px; top:-60px;
+  background: var(--accent); color:#000; padding: 10px 16px;
+  border-radius: var(--radius-s); z-index: 999; transition: top .2s var(--ease);
+  font-weight:700; font-size: 14px;
+}
+.skip-link:focus{ top:12px; }
