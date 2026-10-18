@@ -8,15 +8,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       grid.innerHTML = `<div class="state-msg">No case studies listed yet. New rows added to the Case Studies sheet will appear here automatically.</div>`;
       return;
     }
-    grid.innerHTML = items.map(c => `
-      <article class="glass-card list-card">
-        <h3>${escapeHtml(c.name)}</h3>
-        <p class="meta">By ${escapeHtml(c.author || "Unknown author")}</p>
-        <a class="card-link" href="${escapeHtml(c.link)}" target="_blank" rel="noopener">
-          Read case study ${ICIcons.externalLink}
+    grid.dataset.count = String(items.length);
+    grid.innerHTML = items.map((c, index) => {
+      const shape = items.length === 2 ? "square" : items.length === 1 || index % 2 === 1 ? "rectangle" : "square";
+      return `
+        <a class="course-path case-study-tile" data-shape="${shape}" href="${escapeHtml(c.link)}" target="_blank" rel="noopener" aria-label="Read ${escapeHtml(c.name)} case study by ${escapeHtml(c.author || "Unknown author")} in a new tab">
+          <span class="course-path__eyebrow">Case study <span>·</span> ${String(index + 1).padStart(2, "0")}</span>
+          <span class="course-path__title">${escapeHtml(c.name)}</span>
+          <span class="course-path__detail">${escapeHtml(c.author || "Unknown author")}</span>
+          <span class="course-path__arrow" aria-hidden="true">↗</span>
         </a>
-      </article>
-    `).join("");
+      `;
+    }).join("");
   }catch(err){
     grid.innerHTML = `<div class="state-msg is-error">${escapeHtml(err.message)}</div>`;
   }

@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const fromInput = document.getElementById("competition-date-from");
   const throughInput = document.getElementById("competition-date-through");
   const instituteSelect = document.getElementById("competition-institute-filter");
+  const formatSelect = document.getElementById("competition-format-filter");
   const clearButton = document.getElementById("clear-competition-filters");
   const previousButton = document.getElementById("calendar-previous");
   const nextButton = document.getElementById("calendar-next");
@@ -24,6 +25,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   let activeMonth = firstOfMonth(new Date());
   let focusedDateKey = toDateKey(new Date());
   let selectedDateKey = "";
+
+  [fromInput, throughInput].forEach(input => {
+    input.addEventListener("click", () => {
+      if (typeof input.showPicker !== "function") return;
+      try { input.showPicker(); } catch (_) { /* The browser may already have opened its native picker. */ }
+    });
+  });
 
   monthLabel.textContent = formatMonth(activeMonth);
   topPicks.innerHTML = `<p class="agenda-empty">Loading committee picks…</p>`;
@@ -41,6 +49,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     selectedDateKey = "";
     render();
   });
+  formatSelect.addEventListener("change", () => {
+    selectedDateKey = "";
+    render();
+  });
   fromInput.addEventListener("change", onDateRangeChange);
   throughInput.addEventListener("change", onDateRangeChange);
   clearButton.addEventListener("click", () => {
@@ -49,6 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     fromInput.max = "";
     throughInput.min = "";
     instituteSelect.value = "";
+    formatSelect.value = "";
     activeMonth = firstOfMonth(new Date());
     focusedDateKey = toDateKey(new Date());
     selectedDateKey = "";
@@ -81,6 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ...row,
         name: String(row.name || "Untitled competition").trim(),
         institute: String(row.institute || "").trim(),
+        format: normalizeCompetitionFormat(row.format),
         pickNote: String(row.pickNote || "").trim(),
         pickOrder: Number.isFinite(pickOrderValue) && pickOrderValue > 0 ? pickOrderValue : Number.MAX_SAFE_INTEGER,
         deadlineDate,
@@ -140,6 +154,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         focusedDateKey = toDateKey(date);
       }
     }
+    const matches = getFilteredCompetitions();
+    const activeMonthKey = toDateKey(activeMonth).slice(0, 7);
+    if (matches.length && !matches.some(item => item.dateKey.startsWith(activeMonthKey))){
+      const firstVisibleMatch = matches.find(item => item.deadlineDate);
+      if (firstVisibleMatch){
+        activeMonth = firstOfMonth(firstVisibleMatch.deadlineDate);
+        focusedDateKey = firstVisibleMatch.dateKey;
+      }
+    }
     selectedDateKey = "";
     render();
   }
@@ -180,12 +203,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rangeStart = fromInput.value;
     const rangeEnd = throughInput.value;
     const invalidRange = Boolean(rangeStart && rangeEnd && rangeStart > rangeEnd);
-    const hasFilters = Boolean(rangeStart || rangeEnd || instituteSelect.value);
+    const hasFilters = Boolean(rangeStart || rangeEnd || instituteSelect.value || formatSelect.value);
     clearButton.disabled = !hasFilters;
     monthLabel.textContent = formatMonth(activeMonth);
 
     const filtered = invalidRange ? [] : competitions.filter(item => {
       if (instituteSelect.value && item.institute !== instituteSelect.value) return false;
+      if (formatSelect.value && item.format !== formatSelect.value) return false;
       if (rangeStart && (!item.dateKey || item.dateKey < rangeStart)) return false;
       if (rangeEnd && (!item.dateKey || item.dateKey > rangeEnd)) return false;
       return true;
@@ -252,7 +276,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function openDayDialog(dateKey){
     const date = parseDeadlineDate(dateKey);
-    const hasFilters = Boolean(fromInput.value || throughInput.value || instituteSelect.value);
+    const hasFilters = Boolean(fromInput.value || throughInput.value || instituteSelect.value || formatSelect.value);
     const items = getFilteredCompetitions().filter(item => item.dateKey === dateKey);
     dayDialogTitle.textContent = formatLongDate(date);
     dayDialogCount.textContent = `${items.length} ${items.length === 1 ? "competition deadline" : "competition deadlines"}`;
@@ -269,6 +293,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (rangeStart && rangeEnd && rangeStart > rangeEnd) return [];
     return competitions.filter(item => {
       if (instituteSelect.value && item.institute !== instituteSelect.value) return false;
+      if (formatSelect.value && item.format !== formatSelect.value) return false;
       if (rangeStart && (!item.dateKey || item.dateKey < rangeStart)) return false;
       if (rangeEnd && (!item.dateKey || item.dateKey > rangeEnd)) return false;
       return true;
@@ -281,13 +306,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       ? `<div class="deadline-date-block${isTopPick ? " is-top-pick" : ""}" aria-hidden="true"><strong>${date.getDate()}</strong><span>${date.toLocaleDateString("en-IN", { month:"short" })}</span></div>`
       : `<div class="deadline-date-block is-undated${isTopPick ? " is-top-pick" : ""}" aria-hidden="true"><strong>—</strong><span>TBC</span></div>`;
     const dateCopy = date ? `<p class="deadline-exact">Due ${formatShortDate(date)}</p>` : `<p class="deadline-exact">Deadline not announced</p>`;
-    const details = item.link
-      ? `<a class="deadline-details" href="${escapeHtml(item.link)}" target="_blank" rel="noopener">Competition details ${ICIcons.externalLink}</a>`
+    const href = String(item.link || "").trim();
+    const wrapper = href ? "a" : "article";
+    const linkAttributes = href
+      ? `href="${escapeHtml(href)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(item.name)} competition details in a new tab"`
+      : "";
+    const details = href
+      ? `<span class="deadline-details icon-link" aria-hidden="true" title="Competition details">${ICIcons.externalLink}</span>`
       : "";
     const note = isTopPick && item.pickNote ? `<p class="top-pick-note">${escapeHtml(item.pickNote)}</p>` : "";
     const pickLabel = isTopPick ? `<span class="top-pick-label">IC pick</span>` : "";
 
-    return `<article class="deadline-item${isTopPick ? " is-top-pick" : ""}">
+    return `<${wrapper} class="deadline-item${isTopPick ? " is-top-pick" : ""}" ${linkAttributes}>
       ${dateBlock}
       <div class="deadline-item-copy">
         ${pickLabel}
@@ -297,7 +327,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ${dateCopy}
         ${details}
       </div>
-    </article>`;
+    </${wrapper}>`;
   }
 
   function parseDeadlineDate(value){
@@ -313,9 +343,37 @@ document.addEventListener("DOMContentLoaded", async () => {
       return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
     }
 
+    // Google Sheets using an Indian locale may return deadlines as DD/MM/YYYY.
+    // Parse that explicitly instead of relying on the browser's US-oriented Date.parse.
+    const dayFirstDate = raw.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+    if (dayFirstDate){
+      const day = Number(dayFirstDate[1]);
+      const month = Number(dayFirstDate[2]);
+      const year = Number(dayFirstDate[3]);
+      const date = new Date(year, month - 1, day);
+      return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
+    }
+
+    const googleDate = raw.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})\)$/i);
+    if (googleDate){
+      const year = Number(googleDate[1]);
+      const month = Number(googleDate[2]);
+      const day = Number(googleDate[3]);
+      const date = new Date(year, month, day);
+      return date.getFullYear() === year && date.getMonth() === month && date.getDate() === day ? date : null;
+    }
+
     const parsed = new Date(raw);
     if (Number.isNaN(parsed.getTime())) return null;
     return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+  }
+
+  function normalizeCompetitionFormat(value){
+    const format = String(value || "").trim().toLowerCase().replace(/[\s_-]+/g, " ");
+    if (["online", "virtual", "remote"].includes(format)) return "online";
+    if (["offline", "in person", "inperson", "on site", "onsite", "on campus", "physical"].includes(format)) return "offline";
+    if (format === "hybrid") return "hybrid";
+    return format;
   }
 
   function firstOfMonth(date){ return new Date(date.getFullYear(), date.getMonth(), 1); }

@@ -12,11 +12,9 @@ section 8 — so you still don't need to build anything unless you edit it.)
 
 ```
 /project
-  index.html                 Home (3D logo signature + circular 3D gallery of the six sections)
-  knowledge-repository.html  Knowledge Repository landing (4 sub-tiles)
+  index.html                 Home (3D logo signature + circular 3D gallery of five sections)
   courses.html                Course Repository
   case-studies.html           Case Studies
-  github-repositories.html    GitHub Repositories
   iimr-resources.html         IIMR Student Resources
   case-competitions.html      Case Competitions
   live-projects.html          Live Projects (listing)
@@ -37,7 +35,6 @@ section 8 — so you still don't need to build anything unless you edit it.)
     sidebar.js                     mobile drawer, dropdown, active link
     render-courses.js
     render-case-studies.js
-    render-github.js
     render-resources.js
     render-competitions.js
     render-live-projects.js
@@ -48,7 +45,6 @@ section 8 — so you still don't need to build anything unless you edit it.)
   /data                          bundled DEMO data (used until Sheets are wired up)
     courses.json
     case-studies.json
-    github-repos.json
     resources.json
     competitions.json
     live-projects.json
@@ -81,7 +77,7 @@ Google Sheet (CSV export)  →  js/config.js (sheet ID + tab names)
 ```
 
 **Nothing is hard-coded into the HTML.** Every card you see (courses, case
-studies, repos, resources, competitions, live projects) is generated in
+studies, resources, competitions, live projects) is generated in
 JavaScript from a JSON array — right now that array comes from the small
 demo files in `/data`, and later it will come from your Google Sheets
 instead. The HTML and CSS never change either way.
@@ -102,22 +98,16 @@ generated from whatever values appear in the sheet, so a new domain needs no
 code change. The "All" pill is always added automatically.
 
 `Duration` is a free-text field (e.g. `6 weeks`, `40 hours`, `Self-paced`) —
-whatever the course provider lists. It shows up as a small chip under the
-course title and is entirely optional; leave it blank and the chip is just
-skipped.
+whatever the course provider lists. Numeric values are displayed as hours;
+values with an existing unit keep that unit.
 
-Every price shown on the page gets a trailing asterisk, and the page carries
-a small disclaimer noting prices can vary — since course providers change
-pricing outside the committee's control.
+The repository displays each course as a ruled row with its serial number,
+name, rating, duration, and an external-link icon. Numeric durations are
+displayed in hours; durations that already include a unit keep that unit.
 
 **Case Studies**
 ```
 Case Study Name | Author | Link
-```
-
-**GitHub Repositories**
-```
-Repository Name | Description | Link
 ```
 
 **IIMR Resources**
@@ -163,7 +153,7 @@ is purely additive and optional.
 
 **Live Projects**
 ```
-ID | Company | Status | Tagline | About the Company |
+ID | Company | Company Logo | Status | Tagline | About the Company |
 Role 1 | Role 1 Responsibilities | Role 1 Takeaways |
 Role 2 | Role 2 Responsibilities | Role 2 Takeaways |
 Role 3 | Role 3 Responsibilities | Role 3 Takeaways |
@@ -184,6 +174,10 @@ Apply URL | Deadline | Google Doc URL
   line break within a cell) — the page turns each line into a bullet.
 - `Status`: set to `Closed` to hide a project from the listing without
   deleting the row.
+- `Company Logo`: optional direct image URL or a path such as
+  `assets/company-logos/acme.png` for the logo shown on the project listing.
+  To use a repository image, upload it under `assets/company-logos/` and put
+  that path in the matching row. Leave it blank to keep the empty logo circle.
 - See "Google Docs → Live Project pages" below for why most of these
   columns exist even though the source document already has this
   information.
@@ -201,8 +195,8 @@ per tab.
 1. **Share the sheet.** Open the sheet → **Share** (top right) → under
    "General access" choose **Anyone with the link**, role **Viewer**.
    This is required — without it, the site can't read the tabs at all.
-2. **Rename the six tabs** at the bottom of the sheet to exactly:
-   `Courses`, `Case Studies`, `GitHub Repositories`, `IIMR Resources`,
+2. **Rename the five tabs** at the bottom of the sheet to exactly:
+   `Courses`, `Case Studies`, `IIMR Resources`,
    `Case Competitions`, `Live Projects` (matching `IC_CONFIG.sheetTabs` in
    `js/config.js` — spelling and spacing must match exactly).
 3. **Set up the column headers** in each tab per "Spreadsheet schemas"
@@ -330,8 +324,8 @@ above as a future step, not missing functionality.
 
 ## 8. Homepage circular gallery (React island)
 
-The six cards on the home page — Live Projects, Course Repository, Case
-Competitions, Case Studies, IIMR Student Resources and GitHub Repositories —
+The five cards on the home page — Live Projects, Course Repository, Case
+Competitions, Case Studies and IIMR Student Resources —
 are rendered by a small React component as a 3D ring that rotates with page
 scroll (and drifts slowly on its own). Everything else on the site stays plain
 HTML/CSS/JS.
@@ -344,7 +338,7 @@ HTML/CSS/JS.
     index.css                        Tailwind + scoped shadcn design tokens
     demo.tsx                         the original animal-gallery demo (reference only, not shipped)
     /components
-      home-gallery.tsx               the six portal cards, images, live-status badge, responsive fit
+      home-gallery.tsx               the five portal cards, images, live-status badge, responsive fit
       /ui/circular-gallery.tsx       the CircularGallery component (shadcn path: @/components/ui)
     /lib/utils.ts                    shadcn `cn()` helper (for components added later)
 ```
@@ -368,8 +362,6 @@ Notes:
 - Card photos are hot-linked from Unsplash (`images.unsplash.com`). If a photo
   is ever unreachable the card falls back to a plain gradient with its text.
 - With JavaScript disabled, or if the bundle fails to load, the home page
-  shows the same six sections as ordinary cards (the fallback in `index.html`).
+  shows the same five sections as ordinary cards (the fallback in `index.html`).
 - The Live Projects card's "Applications open / closed" badge is driven by
   `ICData.getLiveProjects()`, exactly like the old home-page badge.
-- `knowledge-repository.html` still exists (the sub-pages' "← Knowledge
-  Repository" breadcrumbs link to it) but the home page no longer points to it.

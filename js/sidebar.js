@@ -1,7 +1,6 @@
 /* ============================================================
    IC Portal — Sidebar behaviour (shared across every page)
    - mobile drawer open/close
-   - Knowledge Repository dropdown
    - active link highlighting
    - injects committee email / LinkedIn / logo from config.js
    ============================================================ */
@@ -14,6 +13,7 @@
     document.querySelectorAll("[data-ic-email]").forEach(el => {
       el.href = `mailto:${IC_CONFIG.committee.email}`;
       el.title = IC_CONFIG.committee.email;
+      el.setAttribute("aria-label", "Email the committee");
       const span = el.querySelector("span");
       if (span){
         // Prefer breaking right after the "@" so a long address wraps into
@@ -23,6 +23,19 @@
     });
     document.querySelectorAll("[data-ic-linkedin]").forEach(el => {
       el.href = IC_CONFIG.committee.linkedin;
+      el.setAttribute("aria-label", "IC on LinkedIn");
+    });
+
+    // Keep the contact shortcuts in the visible mobile masthead as well.
+    const contactLinks = document.querySelector(".sidebar-footer");
+    document.querySelectorAll(".mobile-contact-links").forEach(group => {
+      ["[data-ic-email]", "[data-ic-linkedin]"].forEach(selector => {
+        const source = contactLinks && contactLinks.querySelector(selector);
+        if (!source) return;
+        const iconLink = source.cloneNode(true);
+        iconLink.setAttribute("aria-label", source.getAttribute("aria-label") || source.title);
+        group.appendChild(iconLink);
+      });
     });
 
     // Mobile drawer
@@ -35,24 +48,6 @@
     }
     if (scrim){ scrim.addEventListener("click", closeDrawer); }
     document.querySelectorAll(".sidebar .nav-link").forEach(a => a.addEventListener("click", closeDrawer));
-
-    // Knowledge Repository dropdown
-    const group = document.querySelector(".nav-group");
-    if (group){
-      const trigger = group.querySelector(".nav-group-trigger");
-      trigger.addEventListener("click", () => {
-        // If the sidebar is collapsed to icons-only, expand it first so the
-        // submenu labels are actually visible instead of toggling unseen.
-        if (shell && shell.classList.contains("sidebar-collapsed")){
-          setCollapsed(false);
-          group.classList.add("is-open");
-          trigger.setAttribute("aria-expanded", "true");
-          return;
-        }
-        const isOpen = group.classList.toggle("is-open");
-        trigger.setAttribute("aria-expanded", String(isOpen));
-      });
-    }
 
     // Desktop sidebar collapse / pin-open, with a hover preview while collapsed.
     // - Collapsed (pinned shut) is a persisted state, toggled only by clicking "<<".
@@ -100,13 +95,21 @@
     // Active link highlighting based on body[data-page]
     const page = document.body.getAttribute("data-page");
     if (page){
+      const pageKey = page === "live-project" ? "live-projects" : page;
+      let matchedLabel = "";
       document.querySelectorAll(`.sidebar .nav-link[data-page-key]`).forEach(link => {
-        if (link.getAttribute("data-page-key") === page){
+        if (link.getAttribute("data-page-key") === pageKey){
           link.classList.add("is-active");
-          const parentGroup = link.closest(".nav-group");
-          if (parentGroup) parentGroup.classList.add("is-open");
+          link.setAttribute("aria-current", "page");
+          const pageLabel = link.querySelector(".nav-label");
+          if (pageLabel) matchedLabel = pageLabel.textContent.trim();
         }
       });
+      const mobileIndicator = document.querySelector(".mobile-current-page");
+      if (mobileIndicator){
+        const fallbackLabels = { "live-project": "Live Projects" };
+        mobileIndicator.textContent = matchedLabel || fallbackLabels[page] || page.replace(/-/g, " ");
+      }
     }
 
     // Escape closes mobile drawer

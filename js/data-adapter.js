@@ -127,14 +127,6 @@ const ICData = (() => {
     };
   }
 
-  function normRepo(row){
-    return {
-      name: pick(row, "Repository Name", "name"),
-      description: pick(row, "Description", "description"),
-      link: pick(row, "Link", "link", "url")
-    };
-  }
-
   function normResource(row){
     return {
       name: pick(row, "Resource Name", "name"),
@@ -149,6 +141,7 @@ const ICData = (() => {
     return {
       name: pick(row, "Competition Name", "name"),
       institute: pick(row, "Institute", "organising institute", "institute"),
+      format: pick(row, "Format", "Competition Format", "Competition Mode", "Mode", "Participation Mode", "Event Mode", "Delivery Mode"),
       deadline: resolveDeadline(pick(row, "Deadline", "deadline"), scrapedAt),
       link: pick(row, "Link", "link", "url"),
       isTopPick: parseBoolean(pick(row, "IC Top Pick", "Top Pick", "Featured")),
@@ -246,6 +239,7 @@ const ICData = (() => {
     return {
       id: pick(row, "ID", "id") || slugify(pick(row, "Company", "company") + "-" + pick(row, "Project/Role", "role")),
       company: pick(row, "Company", "company"),
+      companyLogo: pick(row, "Company Logo", "Company Logo URL", "Logo", "Logo URL", "company logo"),
       stage: stage,
       stageLabel: LP_STAGES[stage],
       status: (pick(row, "Status", "status") || "Live"),
@@ -253,6 +247,7 @@ const ICData = (() => {
       aboutCompany: pick(row, "About the Company", "about"),
       roles: parseRoles(row),
       selectionCriteria: splitLines(pick(row, "Selection Criteria", "selection criteria")),
+      selectedInterns: splitLines(pick(row, "Selected Interns", "Selected Intern Names")),
       location: pick(row, "Location", "location") || "Remote",
       duration: pick(row, "Project Duration", "duration"),
       applyUrl: pick(row, "Apply URL", "apply link", "application link"),
@@ -324,11 +319,6 @@ const ICData = (() => {
     return rows.map(normCaseStudy);
   }
 
-  async function getGithubRepos(){
-    const rows = await fetchSource("githubRepos");
-    return rows.map(normRepo);
-  }
-
   async function getResources(){
     const rows = await fetchSource("resources");
     return rows.map(normResource);
@@ -342,8 +332,9 @@ const ICData = (() => {
   async function getLiveProjects(){
     const rows = await fetchSource("liveProjects");
     return rows.map(normLiveProject)
-      .filter(p => p.stage !== 0)
-      .sort((a, b) => parseDeadline(a.deadline) - parseDeadline(b.deadline));
+      // Keep the source order from the sheet. The CSV parser returns rows
+      // in their top-to-bottom order, so mapping/filtering preserves it.
+      .filter(p => p.stage !== 0);
   }
 
   async function getLiveProjectById(id){
@@ -352,7 +343,7 @@ const ICData = (() => {
   }
 
   return {
-    getCourses, getCaseStudies, getGithubRepos, getResources,
+    getCourses, getCaseStudies, getResources,
     getCompetitions, getLiveProjects, getLiveProjectById,
     slugify
   };
